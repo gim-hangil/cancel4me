@@ -18,7 +18,7 @@ git clone https://github.com/gim-hangil/cancel4me
 ```
 
 ### 1. 프론트엔드 설치
-
+**cancel4me** is monolithic repository containing both FE and BE the
 ```bash
 cd web
 npm install
@@ -44,7 +44,7 @@ serve build
 
 ```bash
 cd server
-python main.py
+uvicorn main:app
 ```
 
 ## :sparkles: 기여하기
