@@ -1,3 +1,9 @@
+@import url('https://fonts.googleapis.com/css2?family=Nanum+Gothic+Coding:wght@400;700&display=swap');
+
 body {
   margin: 0;
+}
+
+.drac-box, .drac-heading, .drac-select, .drac-text {
+  font-family: Fira Code, Nanum Gothic Coding, monospace;;
 }

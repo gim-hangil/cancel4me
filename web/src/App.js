@@ -1,24 +1,21 @@
-import { Anchor, Paragraph } from 'dracula-ui';
-import 'dracula-ui/styles/dracula-ui.css'
+import { Box, Divider, Heading } from 'dracula-ui';
+import SelectStation from './SelectStation';
 import './App.css';
 
 function App() {
   return (
-    <div className="App">
-      <header className="App-header">
-        <Paragraph>
-          Edit <code>src/App.js</code> and save to reload.
-        </Paragraph>
-        <Anchor
-          className="App-link"
-          href="https://reactjs.org"
-          target="_blank"
-          rel="noopener noreferrer"
-        >
-          Learn React
-        </Anchor>
-      </header>
-    </div>
+    <Box className="App" width="full" mx="auto" my="xs">
+      <Box className="heading" my="sm">
+        <Heading>
+          취소표가 필요해!
+        </Heading>
+      </Box>
+      <Box className="station" display="flex">
+        <SelectStation label="출발" />
+        <SelectStation label="도착" />
+      </Box>
+      <Divider color="purple" mx="xs" my="sm" />
+    </Box>
   );
 }
 

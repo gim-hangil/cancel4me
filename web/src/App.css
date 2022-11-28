@@ -1,3 +1,9 @@
 .App {
+  max-width: 50rem;
+  
   text-align: center;
+}
+
+.App .station .SelectStation {
+  flex: 1;
 }
