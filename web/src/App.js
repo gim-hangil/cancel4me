@@ -1,22 +1,22 @@
-import logo from './logo.svg';
+import { Anchor, Paragraph } from 'dracula-ui';
+import 'dracula-ui/styles/dracula-ui.css'
 import './App.css';
 
 function App() {
   return (
     <div className="App">
       <header className="App-header">
-        <img src={logo} className="App-logo" alt="logo" />
-        <p>
+        <Paragraph>
           Edit <code>src/App.js</code> and save to reload.
-        </p>
-        <a
+        </Paragraph>
+        <Anchor
           className="App-link"
           href="https://reactjs.org"
           target="_blank"
           rel="noopener noreferrer"
         >
           Learn React
-        </a>
+        </Anchor>
       </header>
     </div>
   );
