@@ -49,11 +49,11 @@ uvicorn main:app
 
 ## :sparkles: 기여하기
 
-오류나 기능에 대한 제보는 [이쪽](/issues)으로 부탁드립니다!
+오류나 기능에 대한 제보는 [이쪽](https://github.com/gim-hangil/cancel4me/issues)으로 부탁드립니다!
 
 ## :pencil2: 라이선스
 
-[MIT 라이선스](/blob/main/LICENSE)를 따릅니다.
+[MIT 라이선스](LICENSE)를 따릅니다.
 
 상업적/개인적 이용, 자유로운 수정 및 배포가 가능합니다. 이 소프트웨어를 사용함에
 따른 어떠한 손해도 책임지지 않습니다. 세부 사항은 라이선스 문서를 참고해주세요!
