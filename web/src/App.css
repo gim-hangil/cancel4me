@@ -11,13 +11,3 @@
 .App .tabs li {
   flex: 1;
 }
-
-@media (min-width: 768px) {
-  .App .station {
-    display: flex;
-  }
-  
-  .App .station .SelectStation {
-    flex: 1;
-  } 
-}

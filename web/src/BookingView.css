@@ -1,0 +1,9 @@
+@media (min-width: 768px) {
+  .BookingView .row {
+    display: flex;
+  }
+  
+  .BookingView .row > * {
+    flex: 1;
+  }
+}

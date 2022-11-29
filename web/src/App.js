@@ -1,6 +1,6 @@
 import { Box, Heading, Tabs, Text } from 'dracula-ui';
 import { useState } from 'react';
-import SelectStation from './SelectStation';
+import BookingView from './BookingView';
 import './App.css';
 
 function App() {
@@ -32,10 +32,11 @@ function App() {
           <Text>대기 중</Text>
         </li>
       </Tabs>
-      <Box className="station">
-        <SelectStation label="출발" />
-        <SelectStation label="도착" />
-      </Box>
+      {
+        tab === 'book' ?
+        <BookingView /> :
+        <Box></Box>
+      }
     </Box>
   );
 }
