@@ -29,7 +29,7 @@ function App() {
           ].join(' ')}
           onClick={() => setTab('list')}
         >
-          <Text>확인</Text>
+          <Text>대기 중</Text>
         </li>
       </Tabs>
       <Box className="station" display="flex">
