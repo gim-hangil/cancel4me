@@ -32,7 +32,7 @@ function App() {
           <Text>대기 중</Text>
         </li>
       </Tabs>
-      <Box className="station" display="flex">
+      <Box className="station">
         <SelectStation label="출발" />
         <SelectStation label="도착" />
       </Box>

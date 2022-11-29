@@ -10,7 +10,6 @@ function SelectStation({ label }) {
       m="xxs"
       px="sm"
       py="xs"
-      width="xxs"
     >
       <label>
         <Text>{label || 'Dep.'}</Text>
