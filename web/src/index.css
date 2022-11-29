@@ -4,6 +4,6 @@ body {
   margin: 0;
 }
 
-.drac-box, .drac-heading, .drac-select, .drac-text {
+.drac-box, .drac-heading, .drac-input, .drac-select, .drac-text {
   font-family: Fira Code, Nanum Gothic Coding, monospace;;
 }

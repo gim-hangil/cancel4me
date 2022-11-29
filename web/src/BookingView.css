@@ -1,3 +1,12 @@
+.BookingView .submit {
+  text-align: right;
+}
+
+.BookingView .submit .drac-btn {
+  color: black;
+  width: 10rem;
+}
+
 @media (min-width: 768px) {
   .BookingView .row {
     display: flex;
