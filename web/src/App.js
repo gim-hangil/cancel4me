@@ -25,9 +25,9 @@ function App() {
         <li
           className={[
             'drac-tab',
-            tab === 'list' ? 'drac-tab-active' : ''
+            tab === 'waiting' ? 'drac-tab-active' : ''
           ].join(' ')}
-          onClick={() => setTab('list')}
+          onClick={() => setTab('waiting')}
         >
           <Text>대기 중</Text>
         </li>
