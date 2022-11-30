@@ -1,5 +1,5 @@
 .App {
-  max-width: 50rem;
+  max-width: var(--sizing-6xl);
   
   text-align: center;
 }
