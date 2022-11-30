@@ -2,6 +2,7 @@ import { Box, Heading, Tabs, Text } from 'dracula-ui';
 import { useState } from 'react';
 import BookingView from './BookingView';
 import './App.css';
+import WaitingView from './WaitingView';
 
 function App() {
   const [tab, setTab] = useState('book');
@@ -35,7 +36,7 @@ function App() {
       {
         tab === 'book' ?
         <BookingView /> :
-        <Box></Box>
+        <WaitingView />
       }
     </Box>
   );
