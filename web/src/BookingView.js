@@ -1,4 +1,4 @@
-import { Box, Button, Input, Select } from 'dracula-ui';
+import { Box, Button, Input, Select, Text } from 'dracula-ui';
 import LabelCard from './LabelCard';
 import './BookingView.css';
 
@@ -39,7 +39,9 @@ function BookingView() {
         </LabelCard>
       </Box>
       <Box className="submit">
-        <Button color="purple" m="xxs">예약</Button>
+        <Button color="purple" m="xxs">
+          <Text>예약</Text>
+        </Button>
       </Box>
     </Box>
   );

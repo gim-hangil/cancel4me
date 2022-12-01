@@ -7,8 +7,11 @@
 }
 
 .BookingView .submit .drac-btn {
-  color: var(--black);
   width: 10rem;
+}
+
+.BookingView .submit .drac-btn .drac-text {
+  color: var(--black);
 }
 
 @media (min-width: 768px) {
