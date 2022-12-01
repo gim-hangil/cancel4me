@@ -1,9 +1,13 @@
+.BookingView .drac-input {
+  color: var(--white);
+}
+
 .BookingView .submit {
   text-align: right;
 }
 
 .BookingView .submit .drac-btn {
-  color: black;
+  color: var(--black);
   width: 10rem;
 }
 
