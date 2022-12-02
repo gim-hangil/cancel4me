@@ -1,10 +1,16 @@
-from sqlalchemy import Boolean, Column, ForeignKey, Integer, String
-from sqlalchemy.orm import relationship
+"""SQLAlchemy models
+"""
+from sqlalchemy import Boolean, Column, Integer, String
 
 from .database import Base
 
 
 class Ticket(Base):
+  """Ticket model
+
+  The tickets that user requested to reserve. Workers will read requests from
+  this table on startup and periodically search for cancelled tickets.
+  """
   __tablename__ = "tickets"
 
   id = Column(Integer, primary_key=True, autoincrement=True)

@@ -1,3 +1,8 @@
+"""Pydantic models
+
+Since the term model is used in SQLAlchemy and means different things, used
+schema instead.
+"""
 from pydantic import BaseModel
 
 

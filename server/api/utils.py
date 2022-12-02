@@ -86,6 +86,7 @@ def repeat_every(
             else:
               await run_in_threadpool(func)
             repetitions += 1
+          # pylint: disable=broad-except
           except Exception as exc:
             if logger is not None:
               formatted_exception = "".join(
