@@ -17,3 +17,6 @@ class TicketCreate(TicketBase):
 class Ticket(TicketBase):
   id: int
   reserved: bool
+
+  class Config:
+    orm_mode = True
