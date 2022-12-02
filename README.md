@@ -46,7 +46,7 @@ serve build
 
 ```bash
 cd server
-uvicorn main:app
+uvicorn api.main:app
 ```
 
 ## :sparkles: 기여하기
