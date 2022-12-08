@@ -1,12 +1,17 @@
 import { Box, Heading, Tabs, Text } from 'dracula-ui';
 import { useState } from 'react';
 import BookingView from './BookingView';
-import './App.css';
 import WaitingView from './WaitingView';
+import WelcomeView from './WelcomeView';
+import './App.css';
 
 function App() {
   const [tabNo, setTabNo] = useState(0);
   const tabs = [
+    {
+      label: '소개',
+      viewComponent: <WelcomeView />,
+    },
     {
       label: '예매',
       viewComponent: <BookingView />,
