@@ -1,11 +1,26 @@
 import { Box, Heading, Tabs, Text } from 'dracula-ui';
 import { useState } from 'react';
 import BookingView from './BookingView';
-import './App.css';
 import WaitingView from './WaitingView';
+import WelcomeView from './WelcomeView';
+import './App.css';
 
 function App() {
-  const [tab, setTab] = useState('book');
+  const [tabNo, setTabNo] = useState(0);
+  const tabs = [
+    {
+      label: '소개',
+      viewComponent: <WelcomeView />,
+    },
+    {
+      label: '예매',
+      viewComponent: <BookingView />,
+    },
+    {
+      label: '대기 중',
+      viewComponent: <WaitingView />,
+    },
+  ];
   return (
     <Box className="App" width="full" mx="auto" my="xs">
       <Box className="heading" my="sm">
@@ -14,30 +29,25 @@ function App() {
         </Heading>
       </Box>
       <Tabs className="tabs">
-        <li
-          className={[
-            'drac-tab',
-            tab === 'book' ? 'drac-tab-active' : ''
-          ].join(' ')}
-          onClick={() => setTab('book')}
-        >
-          <Text>예매</Text>
-        </li>
-        <li
-          className={[
-            'drac-tab',
-            tab === 'waiting' ? 'drac-tab-active' : ''
-          ].join(' ')}
-          onClick={() => setTab('waiting')}
-        >
-          <Text>대기 중</Text>
-        </li>
-      </Tabs>
       {
-        tab === 'book' ?
-        <BookingView /> :
-        <WaitingView />
+        tabs.map((tabItem, index) =>
+          <li
+            key={[
+              tabItem.label,
+              tabNo === index ? 'active' : ''
+            ].join(' ')}
+            className={[
+              'drac-tab',
+              tabNo === index ? 'drac-tab-active' : ''
+            ].join(' ')}
+            onClick={() => setTabNo(index)}
+          >
+            <Text>{ tabItem.label }</Text>
+          </li>
+        )
       }
+      </Tabs>
+      { tabs[tabNo].viewComponent }
     </Box>
   );
 }
