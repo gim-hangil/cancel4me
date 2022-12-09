@@ -39,4 +39,4 @@ def create_ticket(
     db_session: Session=Depends(get_db_session)
 ):
     """Create ticket reservation"""
-    return crud.create_ticket(db=db_session, ticket=ticket)
+    return crud.create_ticket(db_session=db_session, ticket=ticket)
