@@ -16,21 +16,27 @@ model.Base.metadata.create_all(bind=engine)
 app = FastAPI()
 
 
-def get_db():
-  db = SessionLocal()
-  try:
-    yield db
-  finally:
-    db.close()
+def get_db_session():
+    """Get database session"""
+    db_session = SessionLocal()
+    try:
+        yield db_session
+    finally:
+        db_session.close()
 
 
 @app.get("/")
 async def test():
-  return {
-    "message": "Hello World",
-  }
+    """Test endpoint"""
+    return {
+        "message": "Hello World",
+    }
 
 
 @app.post("/tickets", response_model=schema.Ticket)
-def create_ticket(ticket: schema.TicketCreate, db: Session=Depends(get_db)):
-  return crud.create_ticket(db=db, ticket=ticket)
+def create_ticket(
+    ticket: schema.TicketCreate,
+    db_session: Session=Depends(get_db_session)
+):
+    """Create ticket reservation"""
+    return crud.create_ticket(db=db_session, ticket=ticket)
