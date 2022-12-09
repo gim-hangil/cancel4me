@@ -1,5 +1,5 @@
 import { Box, Button, Input, Select, Text } from 'dracula-ui';
-import LabelCard from './LabelCard';
+import { LabelCard } from 'components';
 import './BookingView.css';
 
 function BookingView() {

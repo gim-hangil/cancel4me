@@ -1,5 +1,5 @@
 import { Box } from 'dracula-ui';
-import WaitingCard from './WaitingCard';
+import { WaitingCard } from 'components';
 import './WaitingView.css';
 
 function WaitingView() {

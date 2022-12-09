@@ -1,8 +1,6 @@
 import { Box, Heading, Tabs, Text } from 'dracula-ui';
 import { useState } from 'react';
-import BookingView from './BookingView';
-import WaitingView from './WaitingView';
-import WelcomeView from './WelcomeView';
+import { BookingView, WaitingView, WelcomeView } from 'views';
 import './App.css';
 
 function App() {
