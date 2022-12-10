@@ -5,6 +5,7 @@ Since the term model is used in SQLAlchemy and means different things, used
 schema instead.
 """
 from pydantic import BaseModel
+from typing import Literal
 
 
 class TicketBase(BaseModel):
@@ -34,7 +35,7 @@ class TicketRead(TicketBase):
 
 class JSendModel(BaseModel):
     """JSend format base model"""
-    status: str
+    status: Literal["success", "fail", "error"]
     data: dict
 
 
