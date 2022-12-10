@@ -1,5 +1,6 @@
 """Pydantic models
 
+Pydantic models are used as type in FastAPI.
 Since the term model is used in SQLAlchemy and means different things, used
 schema instead.
 """
@@ -21,7 +22,7 @@ class TicketCreate(TicketBase):
     korail_pw: str
 
 
-class Ticket(TicketBase):
+class TicketRead(TicketBase):
     """Ticket schema for read request"""
     id: int
     reserved: bool
@@ -29,3 +30,14 @@ class Ticket(TicketBase):
     class Config:
         """Configuration for ORM support"""
         orm_mode = True
+
+
+class JSendModel(BaseModel):
+    """JSend format base model"""
+    status: str
+    data: dict
+
+
+class TicketJSend(JSendModel):
+    """Ticket response model in JSend format"""
+    data: TicketRead
