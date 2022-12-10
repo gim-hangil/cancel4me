@@ -41,5 +41,5 @@ def create_ticket(
     """Create ticket reservation"""
     return {
         "status": "success",
-        "data": crud.create_ticket(db_session=db_session, ticket=ticket)
+        "data": crud.create_ticket(db_session=db_session, ticket=ticket),
     }

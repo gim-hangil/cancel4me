@@ -31,7 +31,13 @@ class TicketRead(TicketBase):
         """Configuration for ORM support"""
         orm_mode = True
 
-class TicketJSend(BaseModel):
-    """Ticket response model in JSend format"""
+
+class JSendModel(BaseModel):
+    """JSend format base model"""
     status: str
+    data: dict
+
+
+class TicketJSend(JSendModel):
+    """Ticket response model in JSend format"""
     data: TicketRead
