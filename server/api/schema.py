@@ -21,7 +21,7 @@ class TicketCreate(TicketBase):
     korail_pw: str
 
 
-class Ticket(TicketBase):
+class TicketRead(TicketBase):
     """Ticket schema for read request"""
     id: int
     reserved: bool
@@ -29,3 +29,8 @@ class Ticket(TicketBase):
     class Config:
         """Configuration for ORM support"""
         orm_mode = True
+
+class TicketJSend(BaseModel):
+    """Ticket response model in JSend format"""
+    status: str
+    data: TicketRead
