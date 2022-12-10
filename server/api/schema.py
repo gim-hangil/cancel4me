@@ -1,5 +1,6 @@
 """Pydantic models
 
+Pydantic models are used as type in FastAPI.
 Since the term model is used in SQLAlchemy and means different things, used
 schema instead.
 """
