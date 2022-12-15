@@ -38,6 +38,11 @@ function BookingView() {
           </Box>
         )
       }
+      <Box className="submit">
+        <Button color="purple" m="xxs">
+          <Text>예약</Text>
+        </Button>
+      </Box>
     </Box>
   );
 }
