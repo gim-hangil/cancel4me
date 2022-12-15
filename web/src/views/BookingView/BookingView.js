@@ -38,6 +38,14 @@ function BookingView() {
           <Input type="time" />
         </LabelCard>
       </Box>
+      <Box className="row">
+        <LabelCard label="코레일 ID">
+          <Input type="text" />
+        </LabelCard>
+        <LabelCard label="코레일 PW">
+          <Input type="password" />
+        </LabelCard>
+      </Box>
       <Box className="submit">
         <Button color="purple" m="xxs">
           <Text>예약</Text>
