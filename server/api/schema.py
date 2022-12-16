@@ -42,3 +42,7 @@ class JSendModel(BaseModel):
 class TicketJSend(JSendModel):
     """Ticket response model in JSend format"""
     data: TicketRead
+
+class TicketsJSend(JSendModel):
+    """Array of tickets response model in JSend format"""
+    data: list[TicketRead]
