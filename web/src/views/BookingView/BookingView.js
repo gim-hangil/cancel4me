@@ -80,13 +80,13 @@ function render_simple_input(input_type, ref) {
 }
 
 function submit_form(form_items) {
-  let result = '';
+  let form_data = {};
   for (let form_row of form_items) {
     for (let input of form_row) {
-      result += `${input.label} : ${input.ref.current.value}\n`;
+      form_data[input.label] = input.ref.current.value;
     }
   }
-  alert(result);
+  alert(JSON.stringify(form_data));
 }
 
 export default BookingView;
