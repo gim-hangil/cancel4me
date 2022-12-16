@@ -33,6 +33,19 @@ async def test():
     }
 
 
+@app.get("/tickets", response_model=schema.TicketsJSend)
+def get_tickets(
+    skip: int=0,
+    limit: int=100,
+    db_session: Session=Depends(get_db_session),
+):
+    """Get ticket reservations"""
+    return {
+        "status": "success",
+        "data": crud.get_tickets(db_session=db_session, skip=skip, limit=limit)
+    }
+
+
 @app.post("/tickets", response_model=schema.TicketJSend)
 def create_ticket(
     ticket: schema.TicketCreate,
