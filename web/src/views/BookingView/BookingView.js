@@ -31,7 +31,7 @@ function BookingView() {
       {
         label: '출발 가능 시간',
         name: 'departure_base',
-        data: 'time', ref: useRef(),
+        data: 'time',
         ref: useRef(),
       },
       {
@@ -113,7 +113,14 @@ function submit_form(form_items) {
       form_data[input.name] = input.ref.current.value;
     }
   }
-  alert(JSON.stringify(form_data));
+  fetch(process.env.REACT_APP_API_HOST + '/tickets', {
+    method: 'POST',
+    headers: {
+      'Content-Type': 'application/json',
+      mode: 'cors',
+    },
+    body: JSON.stringify(form_data),
+  })
 }
 
 export default BookingView;
