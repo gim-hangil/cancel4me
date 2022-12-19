@@ -8,25 +8,52 @@ function BookingView() {
     [
       {
         label: '출발',
+        name: 'departure_station',
         data: ['서울', '대전', '동대구', '부산'],
         renderer: render_select_input,
         ref: useRef(),
       },
       {
         label: '도착',
+        name: 'arrival_station',
         data: ['서울', '대전', '동대구', '부산'],
         renderer: render_select_input,
         ref: useRef(),
       },
     ],
     [
-      { label: '탑승 날짜', data: 'date', ref: useRef()  },
-      { label: '출발 가능 시간', data: 'time', ref: useRef()  },
-      { label: '도착 희망 시간', data: 'time', ref: useRef()  },
+      {
+        label: '탑승 날짜',
+        name: 'date',
+        data: 'date',
+        ref: useRef(),
+      },
+      {
+        label: '출발 가능 시간',
+        name: 'departure_base',
+        data: 'time', ref: useRef(),
+        ref: useRef(),
+      },
+      {
+        label: '도착 희망 시간',
+        name: 'arrival_limit',
+        data: 'time',
+        ref: useRef()
+      },
     ],
     [
-      { label: '코레일 ID', data: 'text', ref: useRef()  },
-      { label: '코레일 PW', data: 'password', ref: useRef()  },
+      {
+        label: '코레일 ID',
+        name: 'korail_id',
+        data: 'text',
+        ref: useRef()
+      },
+      {
+        label: '코레일 PW',
+        name: 'korail_pw',
+        data: 'password',
+        ref: useRef()
+      },
     ],
   ];
   return (
@@ -83,7 +110,7 @@ function submit_form(form_items) {
   let form_data = {};
   for (let form_row of form_items) {
     for (let input of form_row) {
-      form_data[input.label] = input.ref.current.value;
+      form_data[input.name] = input.ref.current.value;
     }
   }
   alert(JSON.stringify(form_data));
