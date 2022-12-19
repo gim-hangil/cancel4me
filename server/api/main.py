@@ -3,17 +3,32 @@
 :copyright: (c) 2022 by Hangil Gim.
 :license: MIT, see LICENSE for more details.
 """
+from dotenv import load_dotenv
 from fastapi import Depends, FastAPI
+from fastapi.middleware.cors import CORSMiddleware
+from os import environ
 from sqlalchemy.orm import Session
 
 from . import crud, model, schema
 from .database import SessionLocal, engine
 
 
+load_dotenv()
+
 model.Base.metadata.create_all(bind=engine)
 
 
 app = FastAPI()
+
+app.add_middleware(
+    CORSMiddleware,
+    allow_origins=[
+        environ["CORS_ALLOW_URL"],
+    ],
+    allow_credentials=True,
+    allow_methods=["GET", "POST", "OPTIONS"],
+    allow_headers=["*"],
+)
 
 
 def get_db_session():
