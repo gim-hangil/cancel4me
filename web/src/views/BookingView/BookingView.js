@@ -31,7 +31,7 @@ function BookingView() {
       {
         label: '출발 가능 시간',
         name: 'departure_base',
-        data: 'time', ref: useRef(),
+        data: 'time',
         ref: useRef(),
       },
       {
