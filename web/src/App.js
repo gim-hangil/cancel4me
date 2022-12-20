@@ -12,7 +12,7 @@ function App() {
     },
     {
       label: '예매',
-      viewComponent: <BookingView />,
+      viewComponent: <BookingView onSuccess={() => setTabNo(2)} />,
     },
     {
       label: '대기 중',
