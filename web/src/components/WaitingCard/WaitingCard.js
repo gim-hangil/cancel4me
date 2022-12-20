@@ -1,7 +1,15 @@
 import { Badge, Box, Divider, Text } from 'dracula-ui';
 import './WaitingCard.css';
 
-function WaitingCard({ done }) {
+function WaitingCard({
+  departure_station,
+  arrival_station,
+  date,
+  departure_base,
+  arrival_limit,
+  id,
+  reserved
+}) {
   return (
     <Box
       className="WaitingCard"
@@ -12,34 +20,34 @@ function WaitingCard({ done }) {
       p="xss"
     >
       <Box width="full">
-        <Text>서울</Text>
+        <Text>{ departure_station }</Text>
       </Box>
       <Divider />
       <Box width="full">
-        <Text>부산</Text>
+        <Text>{ arrival_station }</Text>
       </Box>
       <Divider />
       <Box width="full">
-        <Text>00.06.30.</Text>
+        <Text>{ date }</Text>
       </Box>
       <Divider />
       <Box width="full">
-        <Text>10:00~</Text>
+        <Text>{ departure_base }~</Text>
       </Box>
       <Divider />
       <Box width="full">
-        <Text>~15:00</Text>
+        <Text>~{ arrival_limit }</Text>
       </Box>
       <Divider />
       <Box width="full">
         {
-          done ?
+          reserved ?
           <Badge variant="outline" color="green">완료</Badge> :
           <Badge variant="outline" color="red">대기</Badge>
         }
       </Box>
     </Box>
-  )
+  );
 }
 
 export default WaitingCard;
