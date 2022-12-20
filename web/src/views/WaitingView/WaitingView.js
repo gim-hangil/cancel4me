@@ -5,15 +5,22 @@ import './WaitingView.css';
 
 function WaitingView() {
   const [ tickets, setTickets ] = useState([]);
+  const [ fetched, setFetched ] = useState(false);
   useEffect(() => {
+    if (fetched) {
+      setTickets(JSON.parse(window.sessionStorage.getItem('tickets')));
+      return;
+    }
     (async () => {
       const res = await fetch(process.env.REACT_APP_API_HOST + '/tickets');
       const json = await res.json();
       if (json.status === 'success') {
         setTickets(json.data);
+        setFetched(true);
+        window.sessionStorage.setItem('tickets', JSON.stringify(json.data));
       }
     })();
-  }, []);
+  }, [fetched, ]);
   return (
     <Box className="WaitingView">
       {
