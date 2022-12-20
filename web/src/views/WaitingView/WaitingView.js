@@ -6,11 +6,17 @@ import './WaitingView.css';
 function WaitingView() {
   const [ tickets, setTickets ] = useState([]);
   useEffect(() => {
+    const cached = window.sessionStorage.getItem('tickets');
+    if (cached !== null) {
+      setTickets(JSON.parse(cached));
+      return;
+    }
     (async () => {
       const res = await fetch(process.env.REACT_APP_API_HOST + '/tickets');
       const json = await res.json();
       if (json.status === 'success') {
-        setTickets(json.data);
+        setTickets(json.data.sort((a, b) => b.id - a.id));
+        window.sessionStorage.setItem('tickets', JSON.stringify(json.data));
       }
     })();
   }, []);

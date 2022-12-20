@@ -3,7 +3,7 @@ import { useRef } from 'react';
 import { LabelCard } from 'components';
 import './BookingView.css';
 
-function BookingView() {
+function BookingView({ onSuccess }) {
   const form_items = [
     [
       {
@@ -77,7 +77,11 @@ function BookingView() {
         )
       }
       <Box className="submit">
-        <Button color="purple" m="xxs" onClick={() => submit_form(form_items)}>
+        <Button
+          color="purple"
+          m="xxs"
+          onClick={() => submit_form(form_items, onSuccess)}
+        >
           <Text>예약</Text>
         </Button>
       </Box>
@@ -106,7 +110,7 @@ function render_simple_input(input_type, ref) {
   );
 }
 
-function submit_form(form_items) {
+function submit_form(form_items, onSuccess) {
   let form_data = {};
   for (let form_row of form_items) {
     for (let input of form_row) {
@@ -120,7 +124,12 @@ function submit_form(form_items) {
       mode: 'cors',
     },
     body: JSON.stringify(form_data),
-  })
+  }).then((res) => {
+    if (res.ok) {
+      window.sessionStorage.removeItem('tickets');
+      onSuccess();
+    }
+  });
 }
 
 export default BookingView;
