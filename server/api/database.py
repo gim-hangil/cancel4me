@@ -14,7 +14,7 @@ DATABASE_URL = (
     environ["HEROKU_POSTGRESQL_MAUVE_URL"]
     if "HEROKU_POSTGRESQL_MAUVE_URL" in environ
     else environ["DATABASE_URL"]
-)
+).replace("postgres://", "postgresql://")
 
 engine = create_engine(DATABASE_URL)
 SessionLocal = sessionmaker(autocommit=False, autoflush=False, bind=engine)
