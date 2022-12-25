@@ -22,6 +22,26 @@ def create_ticket(db_session: Session, ticket: schema.TicketCreate):
     return db_ticket
 
 
-def get_tickets(db_session: Session, skip: int = 0, limit: int = 100):
+def get_tickets(
+    db_session: Session,
+    skip: int=0,
+    limit: int=100,
+    date=None,
+    dep=None,
+    arr=None,
+    dep_base=None,
+    arr_limit=None,
+):
     """Get ticket reservation records in DB"""
-    return db_session.query(model.Ticket).offset(skip).limit(limit).all()
+    query = db_session.query(model.Ticket)
+    if date != None:
+        query = query.filter(model.Ticket.date == date)
+    if dep != None:
+        query = query.filter(model.Ticket.dep == dep)
+    if arr != None:
+        query = query.filter(model.Ticket.arr == arr)
+    if dep_base != None:
+        query = query.filter(model.Ticket.dep_base == dep_base)
+    if arr_limit != None:
+        query = query.filter(model.Ticket.arr_limit == arr_limit)
+    return query.order_by(model.Ticket.id).offset(skip).limit(limit).all()
