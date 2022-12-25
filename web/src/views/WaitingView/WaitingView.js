@@ -12,8 +12,7 @@ function WaitingView() {
     {
       retry: 1,
     },
-  )
-  console.log(tickets)
+  );
   if (isLoading) {
     return (
       <Box className="WaitingView">
