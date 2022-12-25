@@ -10,6 +10,7 @@ from korail2 import Korail
 from os import environ
 from sqlalchemy.orm import Session
 from threading import Thread
+from time import strftime
 
 from . import crud, model, schema
 from .database import SessionLocal, engine
@@ -48,8 +49,30 @@ def get_db_session():
 def search_tickets():
     global korail
     def search_tickets(korail, dep, arr):
-        trains = korail.search_train_allday(dep=dep, arr=arr, time="000000")
-        print(trains[0])
+        trains = korail.search_train_allday(
+            dep=dep,
+            arr=arr,
+            date=strftime("%Y%m%d"),
+            time="000000",
+        )
+        # FIXME: matching algorithm, O(NM). could be improved to O(N+M).
+        with SessionLocal() as db_session:
+            tickets = crud.get_tickets(
+                db_session=db_session,
+            )
+            for train in trains:
+                for ticket in tickets:
+                    if (
+                        train.dep_name == ticket.departure_station and
+                        train.arr_name == ticket.arrival_station and
+                        train.dep_date == ticket.date and
+                        train.dep_time > ticket.departure_base and
+                        train.arr_time < ticket.arrival_limit and
+                        ticket.reserved == False
+                    ):
+                        # TODO: book ticket and notify user via SMS
+                        print(f'{train} is available for {ticket.korail_id}')
+
     try:
         thread = Thread(
             target=search_tickets,
