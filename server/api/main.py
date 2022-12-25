@@ -6,11 +6,13 @@
 from dotenv import load_dotenv
 from fastapi import Depends, FastAPI
 from fastapi.middleware.cors import CORSMiddleware
+from korail2 import Korail
 from os import environ
 from sqlalchemy.orm import Session
 
 from . import crud, model, schema
 from .database import SessionLocal, engine
+from .utils import repeat_every
 
 
 load_dotenv()
@@ -28,6 +30,8 @@ app.add_middleware(
     allow_headers=["*"],
 )
 
+korail = Korail("", "", auto_login=False)
+
 
 def get_db_session():
     """Get database session"""
@@ -36,6 +40,17 @@ def get_db_session():
         yield db_session
     finally:
         db_session.close()
+
+
+@app.on_event("startup")
+@repeat_every(seconds=1)
+def search_tickets():
+    global korail
+    try:
+        trains = korail.search_train_allday(dep="서울", arr="부산", time="000000")
+        print(trains[0])
+    except Exception as e:
+        print(e)
 
 
 @app.get("/")
