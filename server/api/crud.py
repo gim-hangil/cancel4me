@@ -7,14 +7,17 @@ from . import model, schema
 
 def create_ticket(db_session: Session, ticket: schema.TicketCreate):
     """Create ticket reservation record in database"""
+    date = ticket.date.replace("-", "")
+    departure_base = ticket.departure_base.replace(":", "") + "00"
+    arrival_limit = ticket.arrival_limit.replace(":", "") + "00"
     db_ticket = model.Ticket(
         korail_id=ticket.korail_id,
         korail_pw=ticket.korail_pw,
         departure_station=ticket.departure_station,
         arrival_station=ticket.arrival_station,
-        date=ticket.date,
-        departure_base=ticket.departure_base,
-        arrival_limit=ticket.arrival_limit,
+        date=date,
+        departure_base=departure_base,
+        arrival_limit=arrival_limit,
     )
     db_session.add(db_ticket)
     db_session.commit()
