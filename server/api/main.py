@@ -76,14 +76,13 @@ def search_tickets():
                                 korail_id=ticket.korail_id,
                                 korail_pw=ticket.korail_pw,
                             )
+                            korail.reserve(train)
                         except NeedToLoginError:
                             crud.mark_ticket_reserved(
                                 db_session,
                                 ticket.id,
                                 False
                             )
-                        else:
-                            korail.reserve(train)
                         finally:
                             korail.logout()
     try:
