@@ -6,7 +6,7 @@
 from dotenv import load_dotenv
 from fastapi import Depends, FastAPI
 from fastapi.middleware.cors import CORSMiddleware
-from korail2 import Korail
+from korail2 import Korail, NeedToLoginError
 from os import environ
 from sqlalchemy.orm import Session
 from threading import Thread
@@ -71,14 +71,18 @@ def search_tickets():
                         ticket.reserved == False
                     ):
                         try:
+                            crud.mark_ticket_reserved(db_session, ticket.id)
                             korail.login(
                                 korail_id=ticket.korail_id,
                                 korail_pw=ticket.korail_pw,
                             )
-                        except:
-                            continue
+                        except NeedToLoginError:
+                            crud.mark_ticket_reserved(
+                                db_session,
+                                ticket.id,
+                                False
+                            )
                         else:
-                            crud.mark_ticket_reserved(db_session, ticket.id)
                             korail.reserve(train)
                         finally:
                             korail.logout()

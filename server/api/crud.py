@@ -53,8 +53,9 @@ def get_tickets(
 def mark_ticket_reserved(
     db_session: Session,
     id: int,
+    reserved: bool=True
 ):
     """Update ticket.reserved as true"""
     query = db_session.query(model.Ticket).filter(model.Ticket.id == id)
-    query.update({ "reserved": True })
+    query.update({ "reserved": reserved })
     db_session.commit()
