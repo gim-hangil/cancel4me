@@ -70,13 +70,18 @@ def search_tickets():
                         train.arr_time < ticket.arrival_limit and
                         ticket.reserved == False
                     ):
-                        crud.mark_ticket_reserved(db_session, ticket.id)
-                        korail.login(
-                            korail_id=ticket.korail_id,
-                            korail_pw=ticket.korail_pw,
-                        )
-                        korail.reserve(train)
-                        korail.logout()
+                        try:
+                            korail.login(
+                                korail_id=ticket.korail_id,
+                                korail_pw=ticket.korail_pw,
+                            )
+                        except:
+                            continue
+                        else:
+                            crud.mark_ticket_reserved(db_session, ticket.id)
+                            korail.reserve(train)
+                        finally:
+                            korail.logout()
     try:
         thread = Thread(
             target=search_tickets,
