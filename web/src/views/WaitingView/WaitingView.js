@@ -13,17 +13,17 @@ function WaitingView() {
       retry: 1,
     },
   )
-  console.log(error)
-  if (error || tickets.status !== 'success') {
-    return (
-      <Box className="WaitingView">
-        <Text>An error has occurred.</Text>
-      </Box>
-    );
-  } else if (isLoading) {
+  console.log(tickets)
+  if (isLoading) {
     return (
       <Box className="WaitingView">
         <Spinner />
+      </Box>
+    );
+  } else if (error || tickets.status !== 'success') {
+    return (
+      <Box className="WaitingView">
+        <Text>An error has occurred.</Text>
       </Box>
     );
   } else {
