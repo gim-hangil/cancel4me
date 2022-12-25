@@ -9,6 +9,7 @@ from fastapi.middleware.cors import CORSMiddleware
 from korail2 import Korail
 from os import environ
 from sqlalchemy.orm import Session
+from threading import Thread
 
 from . import crud, model, schema
 from .database import SessionLocal, engine
@@ -43,12 +44,19 @@ def get_db_session():
 
 
 @app.on_event("startup")
-@repeat_every(seconds=1)
+@repeat_every(seconds=1, wait_first=True)
 def search_tickets():
     global korail
-    try:
-        trains = korail.search_train_allday(dep="서울", arr="부산", time="000000")
+    def search_tickets(korail, dep, arr):
+        trains = korail.search_train_allday(dep=dep, arr=arr, time="000000")
         print(trains[0])
+    try:
+        thread = Thread(
+            target=search_tickets,
+            kwargs={ "korail": korail, "dep": "서울", "arr": "부산" },
+            daemon=True,
+        )
+        thread.start()
     except Exception as e:
         print(e)
 
