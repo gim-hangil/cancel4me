@@ -70,9 +70,13 @@ def search_tickets():
                         train.arr_time < ticket.arrival_limit and
                         ticket.reserved == False
                     ):
-                        # TODO: book ticket and notify user via SMS
-                        print(f'{train} is available for {ticket.korail_id}')
-
+                        crud.mark_ticket_reserved(db_session, ticket.id)
+                        korail.login(
+                            korail_id=ticket.korail_id,
+                            korail_pw=ticket.korail_pw,
+                        )
+                        korail.reserve(train)
+                        korail.logout()
     try:
         thread = Thread(
             target=search_tickets,

@@ -48,3 +48,13 @@ def get_tickets(
     if arr_limit != None:
         query = query.filter(model.Ticket.arr_limit == arr_limit)
     return query.order_by(model.Ticket.id).offset(skip).limit(limit).all()
+
+
+def mark_ticket_reserved(
+    db_session: Session,
+    id: int,
+):
+    """Update ticket.reserved as true"""
+    query = db_session.query(model.Ticket).filter(model.Ticket.id == id)
+    query.update({ "reserved": True })
+    db_session.commit()
