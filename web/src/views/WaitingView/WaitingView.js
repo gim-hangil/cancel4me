@@ -7,14 +7,14 @@ function WaitingView() {
   const { isLoading, error, data: tickets } = useQuery(
     'tickets',
     () => fetch(process.env.REACT_APP_API_HOST + '/tickets').then(res =>
-      res.json().data
+      res.json()
     ),
     {
       retry: 1,
     },
   )
   console.log(error)
-  if (error) {
+  if (error || tickets.status !== 'success') {
     return (
       <Box className="WaitingView">
         <Text>An error has occurred.</Text>
@@ -30,7 +30,7 @@ function WaitingView() {
     return (
       <Box className="WaitingView">
       {
-        tickets.map((ticket) =>
+        tickets.data.map((ticket) =>
           <WaitingCard
             key={ticket.id}
             departure_station={ticket.departure_station}
