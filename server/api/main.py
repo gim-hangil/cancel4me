@@ -10,11 +10,10 @@ from korail2 import Korail, NeedToLoginError
 from os import environ
 from sqlalchemy.orm import Session
 from threading import Thread
-from time import strftime
 
 from . import crud, model, schema
 from .database import SessionLocal, engine
-from .utils import repeat_every
+from .utils import repeat_every, search_tickets
 
 
 load_dotenv()
@@ -46,45 +45,8 @@ def get_db_session():
 
 @app.on_event("startup")
 @repeat_every(seconds=1, wait_first=True)
-def search_tickets():
+def search_tickets_periodic():
     global korail
-    def search_tickets(korail, dep, arr):
-        trains = korail.search_train_allday(
-            dep=dep,
-            arr=arr,
-            date=strftime("%Y%m%d"),
-            time="000000",
-        )
-        # FIXME: matching algorithm, O(NM). could be improved to O(N+M).
-        with SessionLocal() as db_session:
-            tickets = crud.get_tickets(
-                db_session=db_session,
-            )
-            for train in trains:
-                for ticket in tickets:
-                    if (
-                        train.dep_name == ticket.departure_station and
-                        train.arr_name == ticket.arrival_station and
-                        train.dep_date == ticket.date and
-                        train.dep_time > ticket.departure_base and
-                        train.arr_time < ticket.arrival_limit and
-                        ticket.reserved == False
-                    ):
-                        try:
-                            crud.mark_ticket_reserved(db_session, ticket.id)
-                            korail.login(
-                                korail_id=ticket.korail_id,
-                                korail_pw=ticket.korail_pw,
-                            )
-                            korail.reserve(train)
-                        except NeedToLoginError:
-                            crud.mark_ticket_reserved(
-                                db_session,
-                                ticket.id,
-                                False
-                            )
-                        finally:
-                            korail.logout()
     try:
         thread = Thread(
             target=search_tickets,
