@@ -2,6 +2,14 @@
   text-align: left;
 }
 
+.WaitingCard.green {
+  border-left: 1rem solid var(--green);
+}
+
+.WaitingCard.red {
+    border-left: 1rem solid var(--red);
+}
+
 .WaitingCard .drac-badge {
   display: inline-block;
   padding: var(--spacing-xxs) var(--spacing-sm);

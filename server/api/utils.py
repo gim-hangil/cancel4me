@@ -7,10 +7,17 @@ https://github.com/dmontagu/fastapi-utils/blob/d98c594b/fastapi_utils/tasks.py
 import asyncio
 import logging
 from asyncio import ensure_future
+from datetime import datetime
 from functools import wraps
 from traceback import format_exception
 from typing import Any, Callable, Coroutine, Optional, Union
+
+from korail2 import Korail, KorailError, NeedToLoginError, NoResultsError, TrainType
 from starlette.concurrency import run_in_threadpool
+
+from .crud import mark_ticket_reserved, mark_ticket_running
+from .database import SessionLocal
+from .model import Ticket
 
 
 NoArgsNoReturnFuncT = Callable[[], None]
@@ -104,3 +111,44 @@ def repeat_every(
         return wrapped
 
     return decorator
+
+
+def search_trains(ticket: Ticket):
+    """Search for available tickets"""
+    with SessionLocal() as db_session:
+        mark_ticket_running(db_session, ticket.id)
+    korail = Korail(ticket.korail_id, ticket.korail_pw)
+    ticket_datetime = datetime.combine(ticket.date, ticket.departure_base)
+    while ticket_datetime > datetime.now():
+        trains = korail.search_train_allday(
+            dep=ticket.departure_station,
+            arr=ticket.arrival_station,
+            date=ticket.date.strftime("%Y%m%d"),
+            time=max(ticket_datetime, datetime.now()).strftime("%H%M%S"),
+            train_type=TrainType.KTX,
+        )
+        for train in trains:
+            if (
+                train.dep_name == ticket.departure_station and
+                train.arr_name == ticket.arrival_station and
+                train.dep_date == ticket.date.strftime("%Y%m%d") and
+                train.dep_time > ticket.departure_base.strftime("%H%M%S") and
+                train.arr_time < ticket.arrival_limit.strftime("%H%M%S")
+            ):
+                try:
+                    korail.reserve(train)
+                    with SessionLocal() as db_session:
+                        mark_ticket_reserved(db_session, ticket.id)
+                        mark_ticket_running(db_session, ticket.id, False)
+                    print(f"Made a reservation - ticket #{ticket.id}!")
+                    return
+                except NeedToLoginError:
+                    with SessionLocal() as db_session:
+                        mark_ticket_running(db_session, ticket.id, False)
+                        mark_ticket_reserved(db_session, ticket.id, False)
+                    print(f"Failed to login - ticket #{ticket.id}!")
+                    return
+                except NoResultsError:
+                    print(f"No result - ticket #{ticket.id}")
+                except KorailError:
+                    continue

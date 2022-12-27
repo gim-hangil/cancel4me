@@ -4,17 +4,19 @@ Pydantic models are used as type in FastAPI.
 Since the term model is used in SQLAlchemy and means different things, used
 schema instead.
 """
-from pydantic import BaseModel
+import datetime
 from typing import Literal
+
+from pydantic import BaseModel
 
 
 class TicketBase(BaseModel):
     """Ticket schema base"""
     departure_station: str
     arrival_station: str
-    date: str
-    departure_base: str
-    arrival_limit: str
+    date: datetime.date
+    departure_base: datetime.time
+    arrival_limit: datetime.time
 
 
 class TicketCreate(TicketBase):
@@ -27,6 +29,7 @@ class TicketRead(TicketBase):
     """Ticket schema for read request"""
     id: int
     reserved: bool
+    running: bool
 
     class Config:
         """Configuration for ORM support"""

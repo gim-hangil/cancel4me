@@ -38,6 +38,7 @@ function WaitingView() {
             departure_base={ticket.departure_base}
             arrival_limit={ticket.arrival_limit}
             reserved={ticket.reserved}
+            running={ticket.running}
           />
         )
       }

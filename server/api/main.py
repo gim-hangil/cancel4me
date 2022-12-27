@@ -3,20 +3,22 @@
 :copyright: (c) 2022 by Hangil Gim.
 :license: MIT, see LICENSE for more details.
 """
+from os import environ
+from threading import Thread
+
 from dotenv import load_dotenv
 from fastapi import Depends, FastAPI
 from fastapi.middleware.cors import CORSMiddleware
-from os import environ
 from sqlalchemy.orm import Session
 
 from . import crud, model, schema
 from .database import SessionLocal, engine
+from .utils import repeat_every, search_trains
 
 
 load_dotenv()
 
 model.Base.metadata.create_all(bind=engine)
-
 
 app = FastAPI()
 
@@ -36,6 +38,46 @@ def get_db_session():
         yield db_session
     finally:
         db_session.close()
+
+
+@app.on_event("startup")
+def start_initial_threads():
+    """Create new train searching thread for the first time
+
+    differenc between `search_tickets_periodic` is that even ticket whose
+    running state is True will be start a thread.
+    """
+    with SessionLocal() as db_session:
+        tickets = crud.get_tickets(
+            db_session=db_session,
+            reserved=False,
+        )
+    for ticket in tickets:
+        print("Start a thread")
+        Thread(
+            target=search_trains,
+            args=[ticket, ],
+            daemon=True,
+        ).start()
+
+
+@app.on_event("startup")
+@repeat_every(seconds=1, wait_first=True)
+def search_tickets_periodic():
+    """Create new train searching thread for each of new tickets"""
+    with SessionLocal() as db_session:
+        tickets = crud.get_tickets(
+            db_session=db_session,
+            reserved=False,
+            running=False,
+        )
+    for ticket in tickets:
+        print(f"Start a searching thread - ticket #{ticket.id}")
+        Thread(
+            target=search_trains,
+            args=[ticket, ],
+            daemon=True,
+        ).start()
 
 
 @app.get("/")

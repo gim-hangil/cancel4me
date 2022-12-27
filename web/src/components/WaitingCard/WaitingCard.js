@@ -8,11 +8,12 @@ function WaitingCard({
   departure_base,
   arrival_limit,
   id,
-  reserved
+  reserved,
+  running
 }) {
   return (
     <Box
-      className="WaitingCard"
+      className={{'WaitingCard': true, 'red': !running && !reserved, 'green': running && !reserved}}
       color="blackSecondary"
       rounded="lg"
       display="flex"
