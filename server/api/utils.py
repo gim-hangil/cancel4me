@@ -120,7 +120,6 @@ def search_trains(ticket: Ticket):
     korail = Korail(ticket.korail_id, ticket.korail_pw)
     ticket_datetime = datetime.combine(ticket.date, ticket.departure_base)
     while ticket_datetime > datetime.now():
-        print("RUNNING")
         trains = korail.search_train_allday(
             dep=ticket.departure_station,
             arr=ticket.arrival_station,
