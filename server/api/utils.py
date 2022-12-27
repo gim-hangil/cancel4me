@@ -7,15 +7,17 @@ https://github.com/dmontagu/fastapi-utils/blob/d98c594b/fastapi_utils/tasks.py
 import asyncio
 import logging
 from asyncio import ensure_future
+from datetime import datetime
 from functools import wraps
-from korail2 import NeedToLoginError
-from starlette.concurrency import run_in_threadpool
-from time import strftime
 from traceback import format_exception
 from typing import Any, Callable, Coroutine, Optional, Union
 
-from . import crud
+from korail2 import Korail, KorailError, NeedToLoginError, TrainType
+from starlette.concurrency import run_in_threadpool
+
+from .crud import mark_ticket_reserved, mark_ticket_running
 from .database import SessionLocal
+from .model import Ticket
 
 
 NoArgsNoReturnFuncT = Callable[[], None]
@@ -111,41 +113,44 @@ def repeat_every(
     return decorator
 
 
-def search_tickets(korail, dep, arr):
+def search_trains(ticket: Ticket):
     """Search for available tickets"""
-    trains = korail.search_train_allday(
-        dep=dep,
-        arr=arr,
-        date=strftime("%Y%m%d"),
-        time="000000",
-    )
-    # FIXME: matching algorithm, O(NM). could be improved to O(N+M).
     with SessionLocal() as db_session:
-        tickets = crud.get_tickets(
-            db_session=db_session,
+        mark_ticket_running(db_session, ticket.id)
+    korail = Korail(ticket.korail_id, ticket.korail_pw)
+    ticket_datetime = datetime.combine(ticket.date, ticket.departure_base)
+    while ticket_datetime > datetime.now():
+        print("RUNNING")
+        trains = korail.search_train_allday(
+            dep=ticket.departure_station,
+            arr=ticket.arrival_station,
+            date=ticket.date.strftime("%Y%m%d"),
+            time=max(ticket.departure_base, datetime.now().time()).strftime("%H%M%S"),
+            train_type=TrainType.KTX,
         )
         for train in trains:
-            for ticket in tickets:
-                if (
-                    train.dep_name == ticket.departure_station and
-                    train.arr_name == ticket.arrival_station and
-                    train.dep_date == ticket.date and
-                    train.dep_time > ticket.departure_base and
-                    train.arr_time < ticket.arrival_limit and
-                    ticket.reserved == False
-                ):
-                    try:
-                        crud.mark_ticket_reserved(db_session, ticket.id)
-                        korail.login(
-                            korail_id=ticket.korail_id,
-                            korail_pw=ticket.korail_pw,
-                        )
-                        korail.reserve(train)
-                    except NeedToLoginError:
-                        crud.mark_ticket_reserved(
-                            db_session,
-                            ticket.id,
-                            False
-                        )
-                    finally:
-                        korail.logout()
+            if (
+                train.dep_name == ticket.departure_station and
+                train.arr_name == ticket.arrival_station and
+                train.dep_date == ticket.date.strftime("%Y%m%d") and
+                train.dep_time > ticket.departure_base.strftime("%H%M%S") and
+                train.arr_time < ticket.arrival_limit.strftime("%H%M%S")
+            ):
+                try:
+                    with SessionLocal() as db_session:
+                        mark_ticket_reserved(db_session, ticket.id)
+                    korail.reserve(train)
+                    with SessionLocal() as db_session:
+                        mark_ticket_running(db_session, ticket.id, False)
+                    print("DONE")
+                    return
+                except NeedToLoginError:
+                    print("NEED TO LOGIN")
+                    with SessionLocal() as db_session:
+                        mark_ticket_running(db_session, ticket.id, False)
+                        mark_ticket_reserved(db_session, ticket.id, False)
+                    return
+                except KorailError:
+                    continue
+    with SessionLocal() as db_session:
+        mark_ticket_running(db_session, ticket.id, False)

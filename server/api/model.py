@@ -1,6 +1,6 @@
 """SQLAlchemy models
 """
-from sqlalchemy import Boolean, Column, Integer, String
+from sqlalchemy import Boolean, Column, Integer, String, Date, Time
 
 from .database import Base
 
@@ -18,7 +18,8 @@ class Ticket(Base):
     korail_pw = Column(String)
     departure_station = Column(String)
     arrival_station = Column(String)
-    date = Column(String)
-    departure_base = Column(String)
-    arrival_limit = Column(String)
+    date = Column(Date)
+    departure_base = Column(Time)
+    arrival_limit = Column(Time)
     reserved = Column(Boolean, default=False)
+    running = Column(Boolean, default=True)

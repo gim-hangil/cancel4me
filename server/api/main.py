@@ -3,23 +3,22 @@
 :copyright: (c) 2022 by Hangil Gim.
 :license: MIT, see LICENSE for more details.
 """
+from os import environ
+from threading import Thread
+
 from dotenv import load_dotenv
 from fastapi import Depends, FastAPI
 from fastapi.middleware.cors import CORSMiddleware
-from korail2 import Korail, NeedToLoginError
-from os import environ
 from sqlalchemy.orm import Session
-from threading import Thread
 
 from . import crud, model, schema
 from .database import SessionLocal, engine
-from .utils import repeat_every, search_tickets
+from .utils import repeat_every, search_trains
 
 
 load_dotenv()
 
 model.Base.metadata.create_all(bind=engine)
-
 
 app = FastAPI()
 
@@ -30,8 +29,6 @@ app.add_middleware(
     allow_methods=["GET", "POST", "OPTIONS"],
     allow_headers=["*"],
 )
-
-korail = Korail("", "", auto_login=False)
 
 
 def get_db_session():
@@ -45,17 +42,25 @@ def get_db_session():
 
 @app.on_event("startup")
 @repeat_every(seconds=1, wait_first=True)
-def search_tickets_periodic():
-    global korail
-    try:
-        thread = Thread(
-            target=search_tickets,
-            kwargs={ "korail": korail, "dep": "서울", "arr": "부산" },
-            daemon=True,
+def search_tickets_periodic(_tickets: list[model.Ticket]=[]):
+    """Create new train searching thread for each of new tickets"""
+    with SessionLocal() as db_session:
+        new_tickets = crud.get_tickets(
+            db_session=db_session,
+            waiting_only=True,
+            skip=_tickets[-1].id if len(_tickets) > 0 else 0
         )
-        thread.start()
-    except Exception as e:
-        print(e)
+    if len(new_tickets) == 0:
+        return
+    while _tickets:
+        _tickets.pop()
+    _tickets.extend(new_tickets)
+    for ticket in _tickets:
+        Thread(
+            target=search_trains,
+            args=[ticket, ],
+            daemon=True,
+        ).start()
 
 
 @app.get("/")
