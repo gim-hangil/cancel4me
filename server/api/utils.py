@@ -137,20 +137,17 @@ def search_trains(ticket: Ticket):
                 train.arr_time < ticket.arrival_limit.strftime("%H%M%S")
             ):
                 try:
-                    with SessionLocal() as db_session:
-                        mark_ticket_reserved(db_session, ticket.id)
                     korail.reserve(train)
                     with SessionLocal() as db_session:
+                        mark_ticket_reserved(db_session, ticket.id)
                         mark_ticket_running(db_session, ticket.id, False)
-                    print("DONE")
+                    print(f"Made a reservation - ticket #{ticket.id}!")
                     return
                 except NeedToLoginError:
-                    print("NEED TO LOGIN")
                     with SessionLocal() as db_session:
                         mark_ticket_running(db_session, ticket.id, False)
                         mark_ticket_reserved(db_session, ticket.id, False)
+                    print(f"Failed to login - ticket #{ticket.id}!")
                     return
                 except KorailError:
                     continue
-    with SessionLocal() as db_session:
-        mark_ticket_running(db_session, ticket.id, False)

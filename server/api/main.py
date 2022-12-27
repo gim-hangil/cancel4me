@@ -41,21 +41,38 @@ def get_db_session():
 
 
 @app.on_event("startup")
+def start_initial_threads():
+    """Create new train searching thread for the first time
+
+    differenc between `search_tickets_periodic` is that even ticket whose
+    running state is True will be start a thread.
+    """
+    with SessionLocal() as db_session:
+        tickets = crud.get_tickets(
+            db_session=db_session,
+            reserved=False,
+        )
+    for ticket in tickets:
+        print("Start a thread")
+        Thread(
+            target=search_trains,
+            args=[ticket, ],
+            daemon=True,
+        ).start()
+
+
+@app.on_event("startup")
 @repeat_every(seconds=1, wait_first=True)
-def search_tickets_periodic(_tickets: list[model.Ticket]=[]):
+def search_tickets_periodic():
     """Create new train searching thread for each of new tickets"""
     with SessionLocal() as db_session:
-        new_tickets = crud.get_tickets(
+        tickets = crud.get_tickets(
             db_session=db_session,
-            waiting_only=True,
-            skip=_tickets[-1].id if len(_tickets) > 0 else 0
+            reserved=False,
+            running=False,
         )
-    if len(new_tickets) == 0:
-        return
-    while _tickets:
-        _tickets.pop()
-    _tickets.extend(new_tickets)
-    for ticket in _tickets:
+    for ticket in tickets:
+        print(f"Start a searching thread - ticket #{ticket.id}")
         Thread(
             target=search_trains,
             args=[ticket, ],

@@ -22,4 +22,4 @@ class Ticket(Base):
     departure_base = Column(Time)
     arrival_limit = Column(Time)
     reserved = Column(Boolean, default=False)
-    running = Column(Boolean, default=True)
+    running = Column(Boolean, default=False)

@@ -28,12 +28,13 @@ def get_tickets(
     db_session: Session,
     skip: int=0,
     limit: int=100,
-    waiting_only: bool=False,
     date=None,
     dep=None,
     arr=None,
     dep_base=None,
     arr_limit=None,
+    reserved: bool=None,
+    running: bool=None,
 ) -> list[model.Ticket]:
     """Get ticket reservation records in DB"""
     query = db_session.query(model.Ticket)
@@ -47,8 +48,10 @@ def get_tickets(
         query = query.filter(model.Ticket.dep_base == dep_base)
     if arr_limit is not None:
         query = query.filter(model.Ticket.arr_limit == arr_limit)
-    if waiting_only:
-        query = query.filter(model.Ticket.reserved == False)
+    if reserved is not None:
+        query = query.filter(model.Ticket.reserved == reserved)
+    if running is not None:
+        query = query.filter(model.Ticket.running == running)
     return query.order_by(model.Ticket.id).offset(skip).limit(limit).all()
 
 
