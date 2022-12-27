@@ -124,7 +124,7 @@ def search_trains(ticket: Ticket):
         ticket.departure_station,
         ticket.arrival_station,
         ticket.date.strftime("%Y%m%d"),
-        max(ticket.departure_base, datetime.now().time()).strftime("%H%M%S"),
+        max(ticket_datetime, datetime.now()).strftime("%H%M%S"),
         TrainType.KTX,
     )
     while ticket_datetime > datetime.now():
@@ -132,7 +132,7 @@ def search_trains(ticket: Ticket):
             dep=ticket.departure_station,
             arr=ticket.arrival_station,
             date=ticket.date.strftime("%Y%m%d"),
-            time=max(ticket.departure_base, datetime.now().time()).strftime("%H%M%S"),
+            time=max(ticket_datetime, datetime.now()).strftime("%H%M%S"),
             train_type=TrainType.KTX,
         )
         for train in trains:
