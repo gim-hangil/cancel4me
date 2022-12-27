@@ -12,7 +12,7 @@ from functools import wraps
 from traceback import format_exception
 from typing import Any, Callable, Coroutine, Optional, Union
 
-from korail2 import Korail, KorailError, NeedToLoginError, TrainType
+from korail2 import Korail, KorailError, NeedToLoginError, NoResultsError, TrainType
 from starlette.concurrency import run_in_threadpool
 
 from .crud import mark_ticket_reserved, mark_ticket_running
@@ -156,5 +156,7 @@ def search_trains(ticket: Ticket):
                         mark_ticket_reserved(db_session, ticket.id, False)
                     print(f"Failed to login - ticket #{ticket.id}!")
                     return
+                except NoResultsError:
+                    print(f"No result - ticket #{ticket.id}")
                 except KorailError:
                     continue
