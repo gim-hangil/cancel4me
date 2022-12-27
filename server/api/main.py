@@ -3,6 +3,7 @@
 :copyright: (c) 2022 by Hangil Gim.
 :license: MIT, see LICENSE for more details.
 """
+from datetime import datetime
 from multiprocessing import Lock
 from os import environ
 from threading import Thread
@@ -79,6 +80,8 @@ def search_tickets_periodic():
     with SessionLocal() as db_session:
         tickets = crud.get_tickets(
             db_session=db_session,
+            date=datetime.now().date(),
+            dep_base=datetime.now().time(),
             reserved=False,
             running=False,
         )
