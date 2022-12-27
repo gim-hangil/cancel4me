@@ -119,14 +119,6 @@ def search_trains(ticket: Ticket):
         mark_ticket_running(db_session, ticket.id)
     korail = Korail(ticket.korail_id, ticket.korail_pw)
     ticket_datetime = datetime.combine(ticket.date, ticket.departure_base)
-    print(
-        "This thread will be searching for...",
-        ticket.departure_station,
-        ticket.arrival_station,
-        ticket.date.strftime("%Y%m%d"),
-        max(ticket_datetime, datetime.now()).strftime("%H%M%S"),
-        TrainType.KTX,
-    )
     while ticket_datetime > datetime.now():
         trains = korail.search_train_allday(
             dep=ticket.departure_station,
