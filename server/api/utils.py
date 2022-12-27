@@ -7,17 +7,27 @@ https://github.com/dmontagu/fastapi-utils/blob/d98c594b/fastapi_utils/tasks.py
 import asyncio
 import logging
 from asyncio import ensure_future
+from base64 import b64encode
 from datetime import datetime
+from hashlib import sha256
+from hmac import new as new_hmac
 from functools import wraps
+from os import environ
+from time import time
 from traceback import format_exception
 from typing import Any, Callable, Coroutine, Optional, Union
 
+from dotenv import load_dotenv
 from korail2 import Korail, KorailError, NeedToLoginError, NoResultsError, TrainType
+from requests import request
 from starlette.concurrency import run_in_threadpool
 
 from .crud import mark_ticket_reserved, mark_ticket_running
 from .database import SessionLocal
 from .model import Ticket
+
+
+load_dotenv()
 
 
 NoArgsNoReturnFuncT = Callable[[], None]
@@ -141,6 +151,15 @@ def search_trains(ticket: Ticket):
                         mark_ticket_reserved(db_session, ticket.id)
                         mark_ticket_running(db_session, ticket.id, False)
                     print(f"Made a reservation - ticket #{ticket.id}!")
+                    print(send_notification(
+                        msg=f"취소표를 부탁해!\n\n\
+KTX 예약 완료\n10분 내로 코레일 예약 승차권 탭에서 결제를 진행하세요.",
+                        send_from=environ["SENS_SEND_FROM"].replace("-", ""),
+                        send_to=ticket.phone_number.replace("-", ""),
+                        service_id=environ["SENS_SERVICE_ID"],
+                        access_key=environ["NCP_ACCESS_KEY"],
+                        secret_key=environ["NCP_SECRET_KEY"],
+                    ))
                     return
                 except NeedToLoginError:
                     with SessionLocal() as db_session:
@@ -152,3 +171,52 @@ def search_trains(ticket: Ticket):
                     print(f"No result - ticket #{ticket.id}")
                 except KorailError:
                     continue
+
+
+def make_ncp_signature(method, uri, timestamp, access_key, secret_key):
+    """Make NCP signature for SENS API"""
+    message = f"{method} {uri}\n{timestamp}\n{access_key}"
+    message = bytes(message, "UTF-8")
+    secret_key = bytes(secret_key, "UTF-8")
+    signing_key = b64encode(new_hmac(secret_key, message, digestmod=sha256).digest())
+    return signing_key
+
+
+def send_notification(msg, send_from, send_to, service_id, access_key, secret_key):
+    """Sends SMS using NCP SENS API"""
+    sens_url = "https://sens.apigw.ntruss.com"
+    sens_sms_path = f"/sms/v2/services/{service_id}/messages"
+    sens_sms_url = f"{sens_url}{sens_sms_path}"
+
+    timestamp = str(int(time() * 1000))
+    signature = make_ncp_signature(
+        method="POST",
+        uri=sens_sms_path,
+        timestamp=timestamp,
+        access_key=access_key,
+        secret_key=secret_key,
+    )
+
+    notify_response = request(
+        method="POST",
+        url=sens_sms_url,
+        headers={
+            "Content-Type": "application/json; charset=UTF-8",
+            "x-ncp-apigw-timestamp": timestamp,
+            "x-ncp-iam-access-key": access_key,
+            "x-ncp-apigw-signature-v2": signature,
+        },
+        json={
+            "type": "SMS",
+            "from": send_from,
+            "content": msg,
+            "messages": [
+                {
+                    "to": send_to,
+                },
+            ],
+        },
+        timeout=5,
+    )
+
+    return notify_response.json()

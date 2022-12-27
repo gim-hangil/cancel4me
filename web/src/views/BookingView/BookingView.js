@@ -55,6 +55,15 @@ function BookingView({ onSuccess }) {
         ref: useRef()
       },
     ],
+    [
+      {
+        label: '전화번호',
+        name: 'phone_number',
+        data: 'tel',
+        renderer: render_tel_input,
+        ref: useRef(),
+      }
+    ]
   ];
   return (
     <Box className="BookingView">
@@ -91,7 +100,7 @@ function BookingView({ onSuccess }) {
 
 function render_select_input(stations, ref) {
   return (
-    <Select ref={ref}>
+    <Select ref={ref} required>
       <option value="default" disabled={true}>
         역을 선택해주세요
       </option>
@@ -104,9 +113,21 @@ function render_select_input(stations, ref) {
   );
 }
 
+function render_tel_input(data, ref) {
+  return (
+    <Input
+      type={data}
+      ref={ref}
+      pattern="010-[0-9]{4}-[0-9]{4}"
+      placeholder="010-0000-0000"
+      required
+    />
+  )
+}
+
 function render_simple_input(input_type, ref) {
   return (
-    <Input type={input_type} ref={ref} />
+    <Input type={input_type} ref={ref} required />
   );
 }
 

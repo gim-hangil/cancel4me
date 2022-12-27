@@ -1,7 +1,5 @@
 """CRUD functions
 """
-import datetime
-
 from sqlalchemy.orm import Session
 
 from . import model, schema
@@ -10,6 +8,7 @@ from . import model, schema
 def create_ticket(db_session: Session, ticket: schema.TicketCreate):
     """Create ticket reservation record in database"""
     db_ticket = model.Ticket(
+        phone_number=ticket.phone_number,
         korail_id=ticket.korail_id,
         korail_pw=ticket.korail_pw,
         departure_station=ticket.departure_station,

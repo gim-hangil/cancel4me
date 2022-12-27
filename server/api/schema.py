@@ -23,6 +23,7 @@ class TicketCreate(TicketBase):
     """Ticket schema for create request"""
     korail_id: str
     korail_pw: str
+    phone_number: str
 
 
 class TicketRead(TicketBase):

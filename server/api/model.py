@@ -14,6 +14,7 @@ class Ticket(Base):
     __tablename__ = "tickets"
 
     id = Column(Integer, primary_key=True, autoincrement=True)
+    phone_number = Column(String)
     korail_id = Column(String)
     korail_pw = Column(String)
     departure_station = Column(String)
