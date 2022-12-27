@@ -150,25 +150,29 @@ def search_trains(ticket: Ticket):
                     with SessionLocal() as db_session:
                         mark_ticket_reserved(db_session, ticket.id)
                         mark_ticket_running(db_session, ticket.id, False)
-                    print(f"Made a reservation - ticket #{ticket.id}!")
-                    print(send_notification(
-                        msg=f"취소표를 부탁해!\n\n\
+                    print(f"Made a reservation - ticket #{ticket.id}")
+                    send_notification(
+                        msg="취소표를 부탁해!\n\n\
 KTX 예약 완료\n10분 내로 코레일 예약 승차권 탭에서 결제를 진행하세요.",
                         send_from=environ["SENS_SEND_FROM"].replace("-", ""),
                         send_to=ticket.phone_number.replace("-", ""),
                         service_id=environ["SENS_SERVICE_ID"],
                         access_key=environ["NCP_ACCESS_KEY"],
                         secret_key=environ["NCP_SECRET_KEY"],
-                    ))
+                    )
                     return
                 except NeedToLoginError:
                     with SessionLocal() as db_session:
                         mark_ticket_running(db_session, ticket.id, False)
                         mark_ticket_reserved(db_session, ticket.id, False)
-                    print(f"Failed to login - ticket #{ticket.id}!")
+                    print(f"Failed to login - ticket #{ticket.id}")
                     return
                 except NoResultsError:
+                    with SessionLocal() as db_session:
+                        mark_ticket_running(db_session, ticket.id, False)
+                        mark_ticket_reserved(db_session, ticket.id, False)
                     print(f"No result - ticket #{ticket.id}")
+                    return
                 except KorailError:
                     continue
 
