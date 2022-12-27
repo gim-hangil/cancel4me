@@ -152,7 +152,8 @@ def search_trains(ticket: Ticket):
                         mark_ticket_running(db_session, ticket.id, False)
                     print(f"Made a reservation - ticket #{ticket.id}!")
                     print(send_notification(
-                        msg="예약이 완료되었습니다. 코레일에서 결제하세요.",
+                        msg=f"취소표를 부탁해!\n\n\
+KTX 예약 완료\n10분 내로 코레일 예약 승차권 탭에서 결제를 진행하세요.",
                         send_from=environ["SENS_SEND_FROM"].replace("-", ""),
                         send_to=ticket.phone_number.replace("-", ""),
                         service_id=environ["SENS_SERVICE_ID"],
