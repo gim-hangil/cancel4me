@@ -38,15 +38,15 @@ def get_tickets(
     """Get ticket reservation records in DB"""
     query = db_session.query(model.Ticket)
     if date is not None:
-        query = query.filter(model.Ticket.date == date)
+        query = query.filter(model.Ticket.date >= date)
     if dep is not None:
-        query = query.filter(model.Ticket.dep == dep)
+        query = query.filter(model.Ticket.departure_station == dep)
     if arr is not None:
-        query = query.filter(model.Ticket.arr == arr)
+        query = query.filter(model.Ticket.arrival_station == arr)
     if dep_base is not None:
-        query = query.filter(model.Ticket.dep_base == dep_base)
+        query = query.filter(model.Ticket.departure_base >= dep_base)
     if arr_limit is not None:
-        query = query.filter(model.Ticket.arr_limit == arr_limit)
+        query = query.filter(model.Ticket.arrival_limit <= arr_limit)
     if reserved is not None:
         query = query.filter(model.Ticket.reserved == reserved)
     if running is not None:

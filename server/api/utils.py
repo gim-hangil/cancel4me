@@ -175,6 +175,10 @@ KTX 예약 완료\n10분 내로 코레일 예약 승차권 탭에서 결제를 �
                     return
                 except KorailError:
                     continue
+    with SessionLocal() as db_session:
+        mark_ticket_running(db_session, ticket.id, False)
+        mark_ticket_reserved(db_session, ticket.id, False)
+    print(f"Time has passed - ticket #{ticket.id}")
 
 
 def make_ncp_signature(method, uri, timestamp, access_key, secret_key):
