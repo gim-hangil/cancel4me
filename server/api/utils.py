@@ -9,7 +9,6 @@ import logging
 from asyncio import ensure_future
 from base64 import b64encode
 from datetime import datetime
-from dotenv import load_dotenv
 from hashlib import sha256
 from hmac import new as new_hmac
 from functools import wraps
@@ -18,6 +17,7 @@ from time import time
 from traceback import format_exception
 from typing import Any, Callable, Coroutine, Optional, Union
 
+from dotenv import load_dotenv
 from korail2 import Korail, KorailError, NeedToLoginError, NoResultsError, TrainType
 from requests import request
 from starlette.concurrency import run_in_threadpool
