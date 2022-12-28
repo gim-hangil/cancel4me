@@ -11,6 +11,7 @@ function WaitingView() {
     ),
     {
       retry: 1,
+      refetchInterval: 1000,
     },
   );
   if (isLoading) {
