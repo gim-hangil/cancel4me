@@ -13,7 +13,7 @@ function WaitingCard({
 }) {
   return (
     <Box
-      className={{'WaitingCard': true, 'red': !running && !reserved, 'green': running && !reserved}}
+      className="WaitingCard"
       color="blackSecondary"
       rounded="lg"
       display="flex"
