@@ -30,7 +30,7 @@ function WaitingView() {
     return (
       <Box className="WaitingView">
       {
-        tickets.data.map((ticket) =>
+        tickets.data.sort((a, b) => b.id - a.id).map((ticket) =>
           <WaitingCard
             key={ticket.id}
             departure_station={ticket.departure_station}
