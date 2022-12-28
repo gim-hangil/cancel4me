@@ -13,7 +13,7 @@ function WaitingCard({
 }) {
   return (
     <Box
-      className={{'WaitingCard': true, 'red': !running && !reserved, 'green': running && !reserved}}
+      className="WaitingCard"
       color="blackSecondary"
       rounded="lg"
       display="flex"
@@ -43,8 +43,12 @@ function WaitingCard({
       <Box width="full">
         {
           reserved ?
-          <Badge variant="outline" color="green">완료</Badge> :
-          <Badge variant="outline" color="red">대기</Badge>
+          <Badge variant="subtle" color="green">성공</Badge> :
+          (
+            running ?
+            <Badge variant="subtle" color="orange">탐색 중</Badge> :
+            <Badge variant="subtle" color="red">중단</Badge>
+          )
         }
       </Box>
     </Box>
