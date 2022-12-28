@@ -43,7 +43,23 @@ source venv/bin/activate
 pip install -r requirements.txt
 ```
 
-### 3. 실행
+### 3. 필요한 환경 변수 설정
+
+필요한 환경변수 목록은 아래와 같습니다.
+
+**필수**
+- `REACT_APP_API_HOST` : 백엔드가 동작하고 있는 서버의 주소. 스키마를 포함해서 적어야하고, 마지막 슬래시는 적으면 안 된다.
+- `CORS_ALLOW_URL` : 백엔드에 CORS를 허용할 주소의 목록. 콤마로 구분해서 여러 주소를 적을 수 있다. 필수적으로 프론트엔드 서버의 주소를 추가해야 동작한다.
+- `DATABASE_URL` : 데이터베이스 주소. `sqlite:///./db.sqlite3` 와 같은 형식으로 로컬 DB를 사용할 수 있다.
+
+**부가**\
+SMS를 통한 알림 서비스에 활용되는 환경변수로, 없어도 크래시가 일어나지는 않습니다.
+- `NCP_ACCESS_KEY` : 네이버 클라우드 플랫폼 ACCESS KEY.
+- `NCP_SECRET_KEY` : 네이버 클라우드 플랫폼 SECRET KEY.
+- `SENS_SEND_FROM` : 네이버 SENS API에 등록된 발신 번호.
+- `SENS_SERVICE_ID` : 네이버 SENS API의 SERVICE ID.
+
+### 4. 실행
 
 ```bash
 cd web
