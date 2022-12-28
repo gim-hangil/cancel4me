@@ -45,59 +45,30 @@ def get_db_session():
 
 
 @app.on_event("startup")
-def start_initial_threads():
-    """Create new train searching thread for the first time
-
-    differenc between `search_tickets_periodic` is that even ticket whose
-    running state is True will be start a thread.
-    """
-    lock.acquire()
-    with SessionLocal() as db_session:
-        tickets = crud.get_tickets(
-            db_session=db_session,
-            reserved=False,
-        )
-    for ticket in tickets:
-        print(f"Start a searching thread - ticket #{ticket.id}")
-        with SessionLocal() as db_session:
-            crud.mark_ticket_running(
-                db_session=db_session,
-                ticket_id=ticket.id
-            )
-        Thread(
-            target=search_trains,
-            args=[ticket, ],
-            daemon=True,
-        ).start()
-    lock.release()
-
-
-@app.on_event("startup")
-@repeat_every(seconds=1, wait_first=True)
+@repeat_every(seconds=1)
 def search_tickets_periodic():
     """Create new train searching thread for each of new tickets"""
-    lock.acquire()
-    with SessionLocal() as db_session:
-        tickets = crud.get_tickets(
-            db_session=db_session,
-            date=datetime.now().date(),
-            dep_base=datetime.now().time(),
-            reserved=False,
-            running=False,
-        )
-    for ticket in tickets:
-        print(f"Start a searching thread - ticket #{ticket.id}")
+    with lock:
         with SessionLocal() as db_session:
-            crud.mark_ticket_running(
+            tickets = crud.get_tickets(
                 db_session=db_session,
-                ticket_id=ticket.id
+                date=datetime.now().date(),
+                dep_base=datetime.now().time(),
+                reserved=False,
+                running=False,
             )
-        Thread(
-            target=search_trains,
-            args=[ticket, ],
-            daemon=True,
-        ).start()
-    lock.release()
+        for ticket in tickets:
+            print(f"Start a searching thread - ticket #{ticket.id}")
+            with SessionLocal() as db_session:
+                crud.mark_ticket_running(
+                    db_session=db_session,
+                    ticket_id=ticket.id
+                )
+            Thread(
+                target=search_trains,
+                args=[ticket, ],
+                daemon=True,
+            ).start()
 
 
 @app.get("/")
