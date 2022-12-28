@@ -1,4 +1,4 @@
-import { Box, Button, Input, Select, Text } from 'dracula-ui';
+import { Box, Button, Input, Paragraph, Select, Text } from 'dracula-ui';
 import { useRef } from 'react';
 import { LabelCard } from 'components';
 import './BookingView.css';
@@ -94,6 +94,10 @@ function BookingView({ onSuccess }) {
           <Text>예약</Text>
         </Button>
       </Box>
+      <Paragraph>
+        &#8251; 정오는 AM 12:00, 정오는 PM 12:00입니다.<br/>
+        전화번호는 예약 완료시 알림 메세지 전송을 위해 사용됩니다.
+      </Paragraph>
     </Box>
   );
 }
