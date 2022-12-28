@@ -1,6 +1,12 @@
-# 취소표가 필요해!
+<h1 align="center">취소표가 필요해!</h1>
 
-![Demo Screencapture](screencapture.png)
+<div style="overflow-x: auto;" align="center">
+  <img src="screencapture.png" height="auto" alt="Demo screencapture" />
+  <p>
+    <a target="_blank" href="https://cancel4me.netlify.app">보러가기</a> &mid;
+    <a href="#diy">자신의 서버에서 실행하기</a>
+  </p>
+</div>
 
 > 취소표라도 간절한 당신에게 기차표를 구해드립니다
 
@@ -13,6 +19,7 @@
 **취소표가 필요해**를 자신의 서버에 올려 사용하고 싶으시다면 아래 설명을
 따라주세요.
 
+<a id="diy"></a>
 ### 0. 프로젝트 클론
 
 ```bash
@@ -31,8 +38,8 @@ npm build
 
 ```bash
 cd server
-python -m venv .venv
-source .venv/bin/activate
+python -m venv venv
+source venv/bin/activate
 pip install -r requirements.txt
 ```
 
@@ -46,12 +53,14 @@ serve build
 
 ```bash
 cd server
+source venv/bin/activate
 uvicorn api.main:app
 ```
 
 ## :sparkles: 기여하기
 
 오류나 기능에 대한 제보는 [이쪽](https://github.com/gim-hangil/cancel4me/issues)으로 부탁드립니다!
+자유롭게 프로젝트를 포크해서 PR 해주셔도 좋습니다.
 
 ## :pencil2: 라이선스
 
