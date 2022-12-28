@@ -134,7 +134,7 @@ def search_trains(ticket: Ticket):
             dep=ticket.departure_station,
             arr=ticket.arrival_station,
             date=ticket.date.strftime("%Y%m%d"),
-            time=max(ticket_datetime, datetime.now()).strftime("%H%M%S"),
+            time=ticket.departure_base.strftime("%H%M%S"),
             train_type=TrainType.KTX,
         )
         for train in trains:
